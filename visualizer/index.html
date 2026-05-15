@@ -6,6 +6,7 @@
     <title>Bus Sorting Visualizer</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
+
 :root {
     --bg: #0f172a;
     --surface: rgba(30, 41, 59, 0.7);
@@ -18,6 +19,74 @@
     --accent-green: #10b981;
     --accent-purple: #8b5cf6;
     --accent-yellow: #f59e0b;
+    --glass-blur: 12px;
+    --input-bg: rgba(15, 23, 42, 0.8);
+    --input-hover: rgba(255, 255, 255, 0.1);
+    --grad-1: var(--grad-1);
+    --grad-2: var(--grad-2);
+    --log-active-bg: rgba(59, 130, 246, 0.2);
+    accent-color: var(--primary);
+    color-scheme: dark;
+}
+
+[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f1f5f9;
+    --surface: rgba(255, 255, 255, 0.8);
+    --border: rgba(0, 0, 0, 0.1);
+    --text: #0f172a;
+    --text-muted: #475569;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --accent-red: #dc2626;
+    --accent-green: #16a34a;
+    --accent-purple: #7c3aed;
+    --accent-yellow: #d97706;
+    --input-bg: rgba(255, 255, 255, 0.9);
+    --input-hover: rgba(0, 0, 0, 0.05);
+    --grad-1: rgba(59, 130, 246, 0.05);
+    --grad-2: rgba(139, 92, 246, 0.05);
+    --log-active-bg: rgba(59, 130, 246, 0.1);
+}
+
+[data-theme="girly"] {
+    color-scheme: light;
+    --bg: #fff1f2;
+    --surface: rgba(255, 255, 255, 0.85);
+    --border: #f9a8d4;
+    --text: #831843;
+    --text-muted: #be185d;
+    --primary: #db2777;
+    --primary-hover: #be185d;
+    --accent-red: #fb7185;
+    --accent-green: #34d399;
+    --accent-purple: #f472b6;
+    --accent-yellow: #fbbf24;
+    --input-bg: rgba(255, 255, 255, 0.9);
+    --input-hover: rgba(219, 39, 119, 0.1);
+    --grad-1: rgba(251, 113, 133, 0.25);
+    --grad-2: rgba(244, 114, 182, 0.25);
+    --log-active-bg: rgba(219, 39, 119, 0.2);
+}
+
+[data-theme="surprise"] {
+    color-scheme: dark;
+    --bg: #000000;
+    --surface: rgba(0, 0, 0, 0.9);
+    --border: #00ff00;
+    --text: #00ff00;
+    --text-muted: #00cc00;
+    --primary: #00ff00;
+    --primary-hover: #00dd00;
+    --accent-red: #ff0000;
+    --accent-green: #00ff00;
+    --accent-purple: #bc13fe;
+    --accent-yellow: #ffff00;
+    --input-bg: #000000;
+    --input-hover: rgba(0, 255, 0, 0.2);
+    --grad-1: rgba(0, 255, 0, 0.05);
+    --grad-2: rgba(0, 255, 0, 0.05);
+    --log-active-bg: rgba(0, 255, 0, 0.2);
 }
 
 * {
@@ -28,10 +97,10 @@
 
 body {
     font-family: 'Outfit', sans-serif;
-    background-color: var(--bg);
+    background-color: var(--bg); transition: background-color 0.5s, color 0.5s;
     background-image: 
-        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, var(--grad-1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, var(--grad-2) 0px, transparent 50%);
     color: var(--text);
     min-height: 100vh;
     display: flex;
@@ -72,7 +141,7 @@ header {
 h1 {
     font-size: 1.5rem;
     font-weight: 600;
-    background: linear-gradient(to right, #60a5fa, #c084fc);
+    background: linear-gradient(to right, var(--primary), var(--accent-purple));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -88,7 +157,7 @@ select, .btn {
     padding: 0.5rem 1rem;
     border-radius: 8px;
     border: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.8);
+    background: var(--input-bg);
     color: var(--text);
     outline: none;
     transition: all 0.2s;
@@ -104,7 +173,7 @@ select:focus {
 }
 
 .btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--input-hover);
 }
 
 .btn.primary {
@@ -218,7 +287,7 @@ h2 {
 
 .log-list li.active {
     color: var(--text);
-    background: rgba(59, 130, 246, 0.2);
+    background: var(--log-active-bg);
     border-left: 2px solid var(--primary);
 }
 
@@ -372,6 +441,12 @@ h2 {
         <header>
             <h1>Bus Line Sorting Visualizer</h1>
             <div class="controls">
+                <select id="theme-select">
+                    <option value="dark">🌙 Dark Theme</option>
+                    <option value="light">☀️ Light Theme</option>
+                    <option value="girly">🌸 Girly Theme</option>
+                    <option value="surprise">🤖 Matrix Theme</option>
+                </select>
                 <select id="dataset-select">
                     <option value="small">Small Array (4)</option>
                     <option value="large">Large Array (10)</option>
@@ -445,6 +520,11 @@ function updateMetricOptions() {
 }
 
 algoSelect.addEventListener('change', updateMetricOptions);
+const themeSelect = document.getElementById('theme-select');
+themeSelect.addEventListener('change', () => {
+    document.body.setAttribute('data-theme', themeSelect.value);
+});
+
 updateMetricOptions(); // Initialize based on default
 
 const BASE_ADDR = 0x1000;
