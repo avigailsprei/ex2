@@ -48,7 +48,7 @@ body {
 }
 
 .app-container {
-    max-width: 1400px;
+    max-width: none;
     margin: 0 auto;
     padding: 2rem;
     width: 100%;
@@ -137,6 +137,7 @@ main {
     justify-content: center;
     align-items: center;
     overflow-x: auto;
+    padding: 0 100px;
 }
 
 .sidebar {
@@ -225,7 +226,7 @@ h2 {
 .array-container {
     display: flex;
     position: relative;
-    margin-top: 120px;
+    margin-top: 0;
     padding: 2rem;
     background: rgba(0,0,0,0.2);
     border-radius: 24px;
@@ -354,6 +355,7 @@ h2 {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border: 2px solid rgba(255,255,255,0.3);
+    z-index: 100;
 }
 
 .ptr-start { --ptr-color: #3b82f6; }
@@ -386,7 +388,7 @@ h2 {
 
         <main>
             <div class="visualization-area">
-                <div class="array-wrapper" style="position: relative; margin-top: 150px; width: 100%;">
+                <div class="array-wrapper" style="position: relative; margin-top: 150px; width: fit-content;">
                     <div class="pointers-container" id="pointers-container"></div>
                     <div class="array-container" id="array-container" style="margin-top: 0;"></div>
                 </div>
@@ -593,7 +595,7 @@ function simulateQuickSort(data, metric) {
             pointers: [
                 { id: 'start', label: 'START', index: start, class: 'ptr-start', level: 0 },
                 { id: 'end', label: 'END', index: end, class: 'ptr-end', level: 0 },
-                { id: 'limit', label: 'LIMIT (SMALLER <=)', index: limitIndex, class: 'ptr-limit', level: 1 },
+                { id: 'limit', label: 'LIMIT (<=)', index: limitIndex, class: 'ptr-limit', level: 1 },
                 { id: 'pivot', label: 'PIVOT', index: pivotIndex, class: 'ptr-end', level: 2 }
             ],
             highlights: [ {index: pivotIndex, type: 'pivot'} ],
