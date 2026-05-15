@@ -372,6 +372,10 @@ h2 {
         <header>
             <h1>Bus Line Sorting Visualizer</h1>
             <div class="controls">
+                <select id="dataset-select">
+                    <option value="small">Small Array (4)</option>
+                    <option value="large">Large Array (10)</option>
+                </select>
                 <select id="algorithm-select">
                     <option value="bubble">Bubble Sort</option>
                     <option value="quick">Quick Sort</option>
@@ -449,11 +453,24 @@ const GAP = 24; // 1.5rem in px
 const ELEMENT_WIDTH = 140; 
 const TOTAL_ELEMENT_WIDTH = ELEMENT_WIDTH + GAP;
 
-const initialState = [
+const smallData = [
     { name: "Dan", distance: 300, duration: 60, frequency: 10 },
     { name: "Alice", distance: 100, duration: 40, frequency: 30 },
     { name: "Charlie", distance: 500, duration: 20, frequency: 5 },
     { name: "Bob", distance: 200, duration: 50, frequency: 20 }
+];
+
+const largeData = [
+    { name: "Dan", distance: 300, duration: 60, frequency: 10 },
+    { name: "Alice", distance: 100, duration: 40, frequency: 30 },
+    { name: "Charlie", distance: 500, duration: 20, frequency: 5 },
+    { name: "Bob", distance: 200, duration: 50, frequency: 20 },
+    { name: "Eve", distance: 450, duration: 35, frequency: 15 },
+    { name: "Frank", distance: 150, duration: 25, frequency: 25 },
+    { name: "Grace", distance: 350, duration: 55, frequency: 12 },
+    { name: "Heidi", distance: 50, duration: 15, frequency: 40 },
+    { name: "Ivan", distance: 550, duration: 65, frequency: 8 },
+    { name: "Judy", distance: 250, duration: 45, frequency: 18 }
 ];
 
 let frames = [];
@@ -837,12 +854,15 @@ speedSlider.addEventListener('change', () => {
 btnStart.addEventListener('click', () => {
     const algo = document.getElementById('algorithm-select').value;
     const metric = document.getElementById('metric-select').value;
+    const datasetSize = document.getElementById('dataset-select').value;
+    
+    const data = datasetSize === 'small' ? smallData : largeData;
     
     stopPlayback();
     logList.innerHTML = '';
     
-    if (algo === 'bubble') simulateBubbleSort(initialState, metric);
-    else simulateQuickSort(initialState, metric);
+    if (algo === 'bubble') simulateBubbleSort(data, metric);
+    else simulateQuickSort(data, metric);
 
     btnPrev.disabled = false;
     btnNext.disabled = false;
