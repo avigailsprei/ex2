@@ -411,6 +411,28 @@ h2 {
     </div>
 
     <script>
+
+const algoSelect = document.getElementById('algorithm-select');
+const metricSelect = document.getElementById('metric-select');
+
+function updateMetricOptions() {
+    const algo = algoSelect.value;
+    metricSelect.innerHTML = '';
+    
+    if (algo === 'bubble') {
+        metricSelect.innerHTML = '<option value="name">Sort by Name</option>';
+    } else {
+        metricSelect.innerHTML = `
+            <option value="distance">Sort by Distance</option>
+            <option value="duration">Sort by Duration</option>
+            <option value="frequency">Sort by Frequency</option>
+        `;
+    }
+}
+
+algoSelect.addEventListener('change', updateMetricOptions);
+updateMetricOptions(); // Initialize based on default
+
 const BASE_ADDR = 0x1000;
 const ELEMENT_SIZE = 0x40; // 64 bytes
 const GAP = 24; // 1.5rem in px
