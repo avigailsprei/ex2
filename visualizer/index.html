@@ -454,6 +454,8 @@ h2 {
                 <select id="algorithm-select">
                     <option value="bubble">Bubble Sort</option>
                     <option value="quick">Quick Sort</option>
+                    <option value="insertion">Insertion Sort</option>
+                    <option value="selection">Selection Sort</option>
                 </select>
                 <select id="metric-select">
                     <option value="name">Sort by Name</option>
@@ -663,6 +665,190 @@ function simulateBubbleSort(data, metric) {
         pointers: [],
         highlights: arr.map((_, idx) => ({index: idx, type: 'sorted'})),
         action: `Bubble Sort Complete!`
+    });
+}
+
+
+function simulateInsertionSort(data, metric) {
+    frames = [];
+    let arr = cloneArray(data);
+    let len = arr.length;
+
+    frames.push({
+        arr: cloneArray(arr),
+        pointers: [
+            { id: 'start', label: 'START', index: 0, class: 'ptr-start', level: 0 },
+            { id: 'end', label: 'END', index: len, class: 'ptr-end', level: 0 }
+        ],
+        highlights: [],
+        action: `Starting Insertion Sort by ${metric}`
+    });
+
+    for (let i = 1; i < len; i++) {
+        let key = arr[i];
+        let j = i - 1;
+
+        frames.push({
+            arr: cloneArray(arr),
+            pointers: [
+                { id: 'i', label: 'PICKED (KEY)', index: i, class: 'ptr-start', level: 0 },
+                { id: 'j', label: 'J', index: j, class: 'ptr-j', level: 1 }
+            ],
+            highlights: [ {index: i, type: 'swapping'} ],
+            action: `Picking up ${key.name} (the 'key'). We will find its place in the sorted prefix.`
+        });
+
+        while (j >= 0) {
+            frames.push({
+                arr: cloneArray(arr),
+                pointers: [
+                    { id: 'i', label: 'KEY_POS', index: j + 1, class: 'ptr-start', level: 0 },
+                    { id: 'j', label: 'COMPARE', index: j, class: 'ptr-j', level: 1 }
+                ],
+                highlights: [ {index: j, type: 'comparing'} ],
+                action: `Comparing key ${key.name} with ${arr[j].name}.`
+            });
+
+            let shouldShift = false;
+            let cmpVal = compare(key, arr[j], metric);
+            if (cmpVal < 0) shouldShift = true;
+
+            if (shouldShift) {
+                frames.push({
+                    arr: cloneArray(arr),
+                    pointers: [
+                        { id: 'j', label: 'SHIFTING', index: j, class: 'ptr-j', level: 1 }
+                    ],
+                    highlights: [ {index: j, type: 'swapping'}, {index: j+1, type: 'swapping'} ],
+                    action: `${arr[j].name} is larger than key. Shifting it to the right.`
+                });
+
+                arr[j + 1] = arr[j];
+                j--;
+
+                frames.push({
+                    arr: cloneArray(arr),
+                    pointers: [
+                        { id: 'j', label: 'NEXT', index: j, class: 'ptr-j', level: 1 }
+                    ],
+                    highlights: [],
+                    action: `Shift complete. Moving left to compare next.`
+                });
+            } else {
+                frames.push({
+                    arr: cloneArray(arr),
+                    pointers: [
+                        { id: 'j', label: 'STOP', index: j, class: 'ptr-j', level: 1 }
+                    ],
+                    highlights: [],
+                    action: `Key is larger. We found the insertion point!`
+                });
+                break;
+            }
+        }
+        arr[j + 1] = key;
+        
+        frames.push({
+            arr: cloneArray(arr),
+            pointers: [
+                { id: 'i', label: 'INSERTED', index: j + 1, class: 'ptr-start', level: 0 }
+            ],
+            highlights: [ {index: j + 1, type: 'sorted'} ],
+            action: `Inserted ${key.name} at its correct relative position.`
+        });
+    }
+
+    frames.push({
+        arr: cloneArray(arr),
+        pointers: [],
+        highlights: arr.map((_, idx) => ({index: idx, type: 'sorted'})),
+        action: `Insertion Sort Complete!`
+    });
+}
+
+function simulateSelectionSort(data, metric) {
+    frames = [];
+    let arr = cloneArray(data);
+    let len = arr.length;
+
+    frames.push({
+        arr: cloneArray(arr),
+        pointers: [
+            { id: 'start', label: 'START', index: 0, class: 'ptr-start', level: 0 },
+            { id: 'end', label: 'END', index: len, class: 'ptr-end', level: 0 }
+        ],
+        highlights: [],
+        action: `Starting Selection Sort by ${metric}`
+    });
+
+    for (let i = 0; i < len - 1; i++) {
+        let minIdx = i;
+        
+        frames.push({
+            arr: cloneArray(arr),
+            pointers: [
+                { id: 'i', label: 'CURRENT_POS', index: i, class: 'ptr-start', level: 0 },
+                { id: 'min', label: 'MIN_SO_FAR', index: minIdx, class: 'ptr-limit', level: 1 }
+            ],
+            highlights: [ {index: minIdx, type: 'pivot'} ],
+            action: `Finding minimum for position ${formatAddr(i)}. Starting with ${arr[i].name}.`
+        });
+
+        for (let j = i + 1; j < len; j++) {
+            frames.push({
+                arr: cloneArray(arr),
+                pointers: [
+                    { id: 'i', label: 'CURRENT_POS', index: i, class: 'ptr-start', level: 0 },
+                    { id: 'min', label: 'MIN_SO_FAR', index: minIdx, class: 'ptr-limit', level: 1 },
+                    { id: 'j', label: 'SCANNING', index: j, class: 'ptr-j', level: 2 }
+                ],
+                highlights: [ {index: minIdx, type: 'pivot'}, {index: j, type: 'comparing'} ],
+                action: `Comparing current min ${arr[minIdx].name} with ${arr[j].name}.`
+            });
+
+            if (compare(arr[j], arr[minIdx], metric) < 0) {
+                minIdx = j;
+                frames.push({
+                    arr: cloneArray(arr),
+                    pointers: [
+                        { id: 'i', label: 'CURRENT_POS', index: i, class: 'ptr-start', level: 0 },
+                        { id: 'min', label: 'NEW_MIN!', index: minIdx, class: 'ptr-limit', level: 1 }
+                    ],
+                    highlights: [ {index: minIdx, type: 'pivot'} ],
+                    action: `Found a new minimum: ${arr[minIdx].name}!`
+                });
+            }
+        }
+
+        if (minIdx !== i) {
+            frames.push({
+                arr: cloneArray(arr),
+                pointers: [
+                    { id: 'i', label: 'SWAP', index: i, class: 'ptr-start', level: 0 },
+                    { id: 'min', label: 'SWAP', index: minIdx, class: 'ptr-limit', level: 1 }
+                ],
+                highlights: [ {index: i, type: 'swapping'}, {index: minIdx, type: 'swapping'} ],
+                action: `Swapping ${arr[i].name} with minimum ${arr[minIdx].name}.`
+            });
+
+            let tmp = arr[i];
+            arr[i] = arr[minIdx];
+            arr[minIdx] = tmp;
+        }
+
+        frames.push({
+            arr: cloneArray(arr),
+            pointers: [],
+            highlights: [ {index: i, type: 'sorted'} ],
+            action: `Position ${formatAddr(i)} is now sorted.`
+        });
+    }
+
+    frames.push({
+        arr: cloneArray(arr),
+        pointers: [],
+        highlights: arr.map((_, idx) => ({index: idx, type: 'sorted'})),
+        action: `Selection Sort Complete!`
     });
 }
 
@@ -942,7 +1128,9 @@ btnStart.addEventListener('click', () => {
     logList.innerHTML = '';
     
     if (algo === 'bubble') simulateBubbleSort(data, metric);
-    else simulateQuickSort(data, metric);
+    else if (algo === 'quick') simulateQuickSort(data, metric);
+    else if (algo === 'insertion') simulateInsertionSort(data, metric);
+    else if (algo === 'selection') simulateSelectionSort(data, metric);
 
     btnPrev.disabled = false;
     btnNext.disabled = false;

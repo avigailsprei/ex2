@@ -22,7 +22,9 @@ def sort_buses(bus_list: list[dict], sort_by: str) -> list[dict]:
         'name': 'by_name',
         'distance': 'by_distance',
         'duration': 'by_duration',
-        'frequency': 'by_frequency'
+        'frequency': 'by_frequency',
+        'insertion': 'by_insertion',
+        'selection': 'by_selection'
     }
     
     if sort_by not in sort_arg_map:

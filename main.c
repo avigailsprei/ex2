@@ -13,6 +13,8 @@ typedef enum Action
     BY_DURATION,
     BY_FREQUENCY,
     BY_NAME,
+    BY_INSERTION,
+    BY_SELECTION,
     TEST,
     UNDEFINED
 } Action;
@@ -74,6 +76,14 @@ StatusOrAction get_requested_action(int argc, char *argv[])
     } else if (strcmp(argv[1], "by_frequency") == 0)
     {
         action.action = BY_FREQUENCY;
+        action.status = 0;
+    } else if (strcmp(argv[1], "by_insertion") == 0)
+    {
+        action.action = BY_INSERTION;
+        action.status = 0;
+    } else if (strcmp(argv[1], "by_selection") == 0)
+    {
+        action.action = BY_SELECTION;
         action.status = 0;
     } else if (strcmp(argv[1], "test") == 0)
     {
@@ -316,6 +326,14 @@ int main (int argc, char *argv[])
             break;
         case BY_DURATION:
             bus_quick_sort(bus_array, bus_array + number_of_lines, DURATION);
+            print_sorted_array(bus_array, number_of_lines);
+            break;
+        case BY_INSERTION:
+            bus_insertion_sort(bus_array, bus_array + number_of_lines, DISTANCE); // Default to distance for insertion
+            print_sorted_array(bus_array, number_of_lines);
+            break;
+        case BY_SELECTION:
+            bus_selection_sort(bus_array, bus_array + number_of_lines, DISTANCE); // Default to distance for selection
             print_sorted_array(bus_array, number_of_lines);
             break;
         case TEST:
