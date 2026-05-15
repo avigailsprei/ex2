@@ -801,6 +801,7 @@ btnStart.addEventListener('click', () => {
     btnPlayPause.disabled = false;
 
     renderFrame(0);
+    togglePlayback();
 });
 
 btnNext.addEventListener('click', () => { stopPlayback(); nextStep(); });
