@@ -304,10 +304,11 @@ h2 {
 /* Pointers */
 .pointers-container {
     position: absolute;
-    top: -120px;
+    bottom: 100%;
+    margin-bottom: -32px; /* Overlap the 2rem padding of array-container */
     left: 0;
     width: 100%;
-    height: 120px;
+    height: 150px;
     pointer-events: none;
     z-index: 10;
 }
@@ -322,40 +323,45 @@ h2 {
 }
 
 .pointer .arrow {
-    width: 2px;
-    height: 15px;
-    background: currentColor;
+    width: 4px;
+    height: 30px;
+    background: var(--ptr-color);
     position: relative;
     margin-top: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .pointer .arrow::after {
     content: '';
     position: absolute;
-    bottom: -4px;
-    left: -4px;
-    border-width: 5px 5px 0 5px;
+    bottom: -8px;
+    left: -6px;
+    border-width: 8px 8px 0 8px;
     border-style: solid;
-    border-color: currentColor transparent transparent transparent;
+    border-color: var(--ptr-color) transparent transparent transparent;
 }
 
 .pointer .label {
-    background: currentColor;
+    background: var(--ptr-color);
     color: #fff;
-    padding: 4px 10px;
+    padding: 6px 16px;
     border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 1.15rem;
+    font-weight: 800;
     white-space: nowrap;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 2px solid rgba(255,255,255,0.3);
 }
 
-.ptr-start { color: #3b82f6; }
-.ptr-end { color: #f43f5e; }
-.ptr-j { color: #f59e0b; }
-.ptr-j1 { color: #eab308; }
-.ptr-moving { color: #f59e0b; }
-.ptr-limit { color: #8b5cf6; }
+.ptr-start { --ptr-color: #3b82f6; }
+.ptr-end { --ptr-color: #f43f5e; }
+.ptr-j { --ptr-color: #f59e0b; }
+.ptr-j1 { --ptr-color: #eab308; }
+.ptr-moving { --ptr-color: #f59e0b; }
+.ptr-limit { --ptr-color: #8b5cf6; }
 
     </style>
 </head>
@@ -380,8 +386,10 @@ h2 {
 
         <main>
             <div class="visualization-area">
-                <div class="pointers-container" id="pointers-container"></div>
-                <div class="array-container" id="array-container"></div>
+                <div class="array-wrapper" style="position: relative; margin-top: 150px; width: 100%;">
+                    <div class="pointers-container" id="pointers-container"></div>
+                    <div class="array-container" id="array-container" style="margin-top: 0;"></div>
+                </div>
             </div>
             
             <aside class="sidebar">
@@ -486,8 +494,8 @@ function simulateBubbleSort(data, metric) {
     frames.push({
         arr: cloneArray(arr),
         pointers: [
-            { id: 'start', label: 'start', index: 0, class: 'ptr-start', level: 0 },
-            { id: 'end', label: 'end', index: len, class: 'ptr-end', level: 0 }
+            { id: 'start', label: 'START', index: 0, class: 'ptr-start', level: 0 },
+            { id: 'end', label: 'END', index: len, class: 'ptr-end', level: 0 }
         ],
         highlights: [],
         action: `Starting Bubble Sort by ${metric}`
@@ -500,10 +508,10 @@ function simulateBubbleSort(data, metric) {
             frames.push({
                 arr: cloneArray(arr),
                 pointers: [
-                    { id: 'start', label: 'start', index: 0, class: 'ptr-start', level: 0 },
-                    { id: 'end', label: 'end', index: len, class: 'ptr-end', level: 0 },
-                    { id: 'j', label: 'start + j', index: j, class: 'ptr-j', level: 1 },
-                    { id: 'j1', label: 'start + j + 1', index: j+1, class: 'ptr-j1', level: 2 }
+                    { id: 'start', label: 'START', index: 0, class: 'ptr-start', level: 0 },
+                    { id: 'end', label: 'END', index: len, class: 'ptr-end', level: 0 },
+                    { id: 'j', label: 'START + J', index: j, class: 'ptr-j', level: 1 },
+                    { id: 'j1', label: 'START + J + 1', index: j+1, class: 'ptr-j1', level: 2 }
                 ],
                 highlights: [ {index: j, type: 'comparing'}, {index: j+1, type: 'comparing'} ],
                 action: `Comparing ${arr[j].name} and ${arr[j+1].name}`
@@ -513,8 +521,10 @@ function simulateBubbleSort(data, metric) {
                 frames.push({
                     arr: cloneArray(arr),
                     pointers: [
-                        { id: 'j', label: 'start + j', index: j, class: 'ptr-j', level: 1 },
-                        { id: 'j1', label: 'start + j + 1', index: j+1, class: 'ptr-j1', level: 2 }
+                        { id: 'start', label: 'START', index: 0, class: 'ptr-start', level: 0 },
+                        { id: 'end', label: 'END', index: len, class: 'ptr-end', level: 0 },
+                        { id: 'j', label: 'START + J', index: j, class: 'ptr-j', level: 1 },
+                        { id: 'j1', label: 'START + J + 1', index: j+1, class: 'ptr-j1', level: 2 }
                     ],
                     highlights: [ {index: j, type: 'swapping'}, {index: j+1, type: 'swapping'} ],
                     action: `Swapping ${arr[j].name} and ${arr[j+1].name}`
@@ -527,8 +537,10 @@ function simulateBubbleSort(data, metric) {
                 frames.push({
                     arr: cloneArray(arr),
                     pointers: [
-                        { id: 'j', label: 'start + j', index: j, class: 'ptr-j', level: 1 },
-                        { id: 'j1', label: 'start + j + 1', index: j+1, class: 'ptr-j1', level: 2 }
+                        { id: 'start', label: 'START', index: 0, class: 'ptr-start', level: 0 },
+                        { id: 'end', label: 'END', index: len, class: 'ptr-end', level: 0 },
+                        { id: 'j', label: 'START + J', index: j, class: 'ptr-j', level: 1 },
+                        { id: 'j1', label: 'START + J + 1', index: j+1, class: 'ptr-j1', level: 2 }
                     ],
                     highlights: [],
                     action: `Swap complete`
@@ -539,8 +551,8 @@ function simulateBubbleSort(data, metric) {
         frames.push({
             arr: cloneArray(arr),
             pointers: [
-                { id: 'start', label: 'start', index: 0, class: 'ptr-start', level: 0 },
-                { id: 'end', label: 'end', index: len, class: 'ptr-end', level: 0 }
+                { id: 'start', label: 'START', index: 0, class: 'ptr-start', level: 0 },
+                { id: 'end', label: 'END', index: len, class: 'ptr-end', level: 0 }
             ],
             highlights: [ {index: len - i - 1, type: 'sorted'} ],
             action: `Element at ${formatAddr(len - i - 1)} is fully sorted`
@@ -563,8 +575,8 @@ function simulateQuickSort(data, metric) {
     frames.push({
         arr: cloneArray(arr),
         pointers: [
-            { id: 'start', label: 'start', index: 0, class: 'ptr-start', level: 0 },
-            { id: 'end', label: 'end', index: len, class: 'ptr-end', level: 0 }
+            { id: 'start', label: 'START', index: 0, class: 'ptr-start', level: 0 },
+            { id: 'end', label: 'END', index: len, class: 'ptr-end', level: 0 }
         ],
         highlights: [],
         action: `Starting Quick Sort by ${metric}`
@@ -579,10 +591,10 @@ function simulateQuickSort(data, metric) {
         frames.push({
             arr: cloneArray(arr),
             pointers: [
-                { id: 'start', label: 'start', index: start, class: 'ptr-start', level: 0 },
-                { id: 'end', label: 'end', index: end, class: 'ptr-end', level: 0 },
-                { id: 'limit', label: 'limit (smaller <=)', index: limitIndex, class: 'ptr-limit', level: 1 },
-                { id: 'pivot', label: 'pivot', index: pivotIndex, class: 'ptr-end', level: 2 }
+                { id: 'start', label: 'START', index: start, class: 'ptr-start', level: 0 },
+                { id: 'end', label: 'END', index: end, class: 'ptr-end', level: 0 },
+                { id: 'limit', label: 'LIMIT (SMALLER <=)', index: limitIndex, class: 'ptr-limit', level: 1 },
+                { id: 'pivot', label: 'PIVOT', index: pivotIndex, class: 'ptr-end', level: 2 }
             ],
             highlights: [ {index: pivotIndex, type: 'pivot'} ],
             action: `Partitioning. Pivot is ${arr[pivotIndex].name}. 'limit' tracks the boundary of smaller elements.`
@@ -592,9 +604,11 @@ function simulateQuickSort(data, metric) {
             frames.push({
                 arr: cloneArray(arr),
                 pointers: [
-                    { id: 'limit', label: 'limit', index: limitIndex, class: 'ptr-limit', level: 1 },
-                    { id: 'moving', label: 'moving', index: moving, class: 'ptr-moving', level: 2 },
-                    { id: 'pivot', label: 'pivot', index: pivotIndex, class: 'ptr-end', level: 3 }
+                    { id: 'start', label: 'START', index: start, class: 'ptr-start', level: 0 },
+                    { id: 'end', label: 'END', index: end, class: 'ptr-end', level: 0 },
+                    { id: 'limit', label: 'LIMIT', index: limitIndex, class: 'ptr-limit', level: 1 },
+                    { id: 'moving', label: 'MOVING', index: moving, class: 'ptr-moving', level: 2 },
+                    { id: 'pivot', label: 'PIVOT', index: pivotIndex, class: 'ptr-end', level: 3 }
                 ],
                 highlights: [ {index: moving, type: 'comparing'}, {index: pivotIndex, type: 'pivot'} ],
                 action: `Comparing ${arr[moving].name} with pivot ${arr[pivotIndex].name}.`
@@ -611,9 +625,11 @@ function simulateQuickSort(data, metric) {
                 frames.push({
                     arr: cloneArray(arr),
                     pointers: [
-                        { id: 'limit', label: 'limit++ (expand)', index: limitIndex, class: 'ptr-limit', level: 1 },
-                        { id: 'moving', label: 'moving', index: moving, class: 'ptr-moving', level: 2 },
-                        { id: 'pivot', label: 'pivot', index: pivotIndex, class: 'ptr-end', level: 3 }
+                        { id: 'start', label: 'START', index: start, class: 'ptr-start', level: 0 },
+                        { id: 'end', label: 'END', index: end, class: 'ptr-end', level: 0 },
+                        { id: 'limit', label: 'LIMIT++ (EXPAND)', index: limitIndex, class: 'ptr-limit', level: 1 },
+                        { id: 'moving', label: 'MOVING', index: moving, class: 'ptr-moving', level: 2 },
+                        { id: 'pivot', label: 'PIVOT', index: pivotIndex, class: 'ptr-end', level: 3 }
                     ],
                     highlights: [ {index: limitIndex, type: 'swapping'}, {index: moving, type: 'swapping'} ],
                     action: `It is smaller! Expanding the 'smaller region' (limit++) and swapping to include it.`
@@ -626,8 +642,11 @@ function simulateQuickSort(data, metric) {
                  frames.push({
                     arr: cloneArray(arr),
                     pointers: [
-                        { id: 'limit', label: 'limit', index: limitIndex, class: 'ptr-limit', level: 1 },
-                        { id: 'moving', label: 'moving', index: moving, class: 'ptr-moving', level: 2 }
+                        { id: 'start', label: 'START', index: start, class: 'ptr-start', level: 0 },
+                        { id: 'end', label: 'END', index: end, class: 'ptr-end', level: 0 },
+                        { id: 'limit', label: 'LIMIT', index: limitIndex, class: 'ptr-limit', level: 1 },
+                        { id: 'moving', label: 'MOVING', index: moving, class: 'ptr-moving', level: 2 },
+                        { id: 'pivot', label: 'PIVOT', index: pivotIndex, class: 'ptr-end', level: 3 }
                     ],
                     highlights: [ {index: pivotIndex, type: 'pivot'} ],
                     action: `Swap complete. ${arr[limitIndex].name} is now safely inside the smaller region.`
@@ -636,9 +655,11 @@ function simulateQuickSort(data, metric) {
                 frames.push({
                     arr: cloneArray(arr),
                     pointers: [
-                        { id: 'limit', label: 'limit', index: limitIndex, class: 'ptr-limit', level: 1 },
-                        { id: 'moving', label: 'moving', index: moving, class: 'ptr-moving', level: 2 },
-                        { id: 'pivot', label: 'pivot', index: pivotIndex, class: 'ptr-end', level: 3 }
+                        { id: 'start', label: 'START', index: start, class: 'ptr-start', level: 0 },
+                        { id: 'end', label: 'END', index: end, class: 'ptr-end', level: 0 },
+                        { id: 'limit', label: 'LIMIT', index: limitIndex, class: 'ptr-limit', level: 1 },
+                        { id: 'moving', label: 'MOVING', index: moving, class: 'ptr-moving', level: 2 },
+                        { id: 'pivot', label: 'PIVOT', index: pivotIndex, class: 'ptr-end', level: 3 }
                     ],
                     highlights: [ {index: pivotIndex, type: 'pivot'} ],
                     action: `It is larger. Doing nothing, so it naturally becomes part of the larger region.`
@@ -650,8 +671,10 @@ function simulateQuickSort(data, metric) {
         frames.push({
             arr: cloneArray(arr),
             pointers: [
-                { id: 'limit', label: 'limit+1', index: limitIndex, class: 'ptr-limit', level: 1 },
-                { id: 'pivot', label: 'pivot', index: pivotIndex, class: 'ptr-end', level: 2 }
+                { id: 'start', label: 'START', index: start, class: 'ptr-start', level: 0 },
+                { id: 'end', label: 'END', index: end, class: 'ptr-end', level: 0 },
+                { id: 'limit', label: 'LIMIT+1 (FINAL POS)', index: limitIndex, class: 'ptr-limit', level: 1 },
+                { id: 'pivot', label: 'PIVOT', index: pivotIndex, class: 'ptr-end', level: 2 }
             ],
             highlights: [ {index: limitIndex, type: 'swapping'}, {index: pivotIndex, type: 'swapping'} ],
             action: `Loop done. Placing pivot immediately after the smaller region (at limit+1).`
@@ -664,7 +687,7 @@ function simulateQuickSort(data, metric) {
         frames.push({
             arr: cloneArray(arr),
             pointers: [
-                { id: 'pivot_placed', label: 'pivot_placed', index: limitIndex, class: 'ptr-start', level: 0 }
+                { id: 'pivot_placed', label: 'PIVOT_PLACED', index: limitIndex, class: 'ptr-start', level: 0 }
             ],
             highlights: [ {index: limitIndex, type: 'sorted'} ],
             action: `Pivot placed at its final, sorted position ${formatAddr(limitIndex)}.`
@@ -742,8 +765,9 @@ function renderFrame(index) {
             <div class="arrow"></div>
         `;
         
-        let offset = 90 - (p.level * 30); 
-        el.style.top = `${offset}px`;
+        el.style.bottom = '0px';
+        let arrowHeight = 30 + (p.level * 40);
+        el.querySelector('.arrow').style.height = `${arrowHeight}px`;
 
         pointersContainer.appendChild(el);
     });
