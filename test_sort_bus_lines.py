@@ -49,9 +49,9 @@ def test_invalid_bus_data():
     invalid_buses = [
         {'name': 'A9', 'distance': 500, 'duration': 40, 'frequency': 10},
     ]
-    # The C program prints an error, skips the line, reaches EOF, and prints uninitialized memory (often zeroed).
+    # The C program prints an error, skips the line, reaches EOF, and returns.
+    # Since we fixed the uninitialized memory bug, it correctly sorts 0 elements and outputs nothing.
     result = sort_buses(invalid_buses, 'name')
-    assert len(result) == 1
-    assert result[0] == {'name': '', 'distance': 0, 'duration': 0, 'frequency': 0}
+    assert len(result) == 0
 
 

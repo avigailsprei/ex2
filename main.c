@@ -169,7 +169,7 @@ bool validate_frequency(const char* frequency_str)
     return is_within_range((int)val, 1, FREQUENCY_MAX);
 }
 
-void get_buses_info(BusLine *bus_array, int requested_number_of_lines)
+int get_buses_info(BusLine *bus_array, int requested_number_of_lines)
 {
     int number_of_buses = 0;
     char buffer[MAX_LINE_LENGTH];
@@ -215,6 +215,7 @@ void get_buses_info(BusLine *bus_array, int requested_number_of_lines)
             break;
         }
     }
+    return number_of_buses;
 }
 
 void print_sorted_array(BusLine* bus_array, int number_of_lines)
@@ -297,7 +298,7 @@ int main (int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    get_buses_info(bus_array, number_of_lines);
+    number_of_lines = get_buses_info(bus_array, number_of_lines);
 
     // perform requested action on lines.
     switch (status_or_action.action) {

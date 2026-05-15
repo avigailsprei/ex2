@@ -35,7 +35,10 @@ def sort_buses(bus_list: list[dict], sort_by: str) -> list[dict]:
     
     # 2. Each bus line info
     for bus in bus_list:
-        input_lines.append(f"{bus['name']},{bus['distance']},{bus['duration']},{bus['frequency']}")
+        name = str(bus['name'])
+        if ',' in name or '\n' in name:
+            raise ValueError(f"Invalid bus name '{name}': cannot contain commas or newlines.")
+        input_lines.append(f"{name},{bus['distance']},{bus['duration']},{bus['frequency']}")
     
     # Join with newlines and add a trailing newline
     input_data = "\n".join(input_lines) + "\n"
